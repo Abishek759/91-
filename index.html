@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>91 Club Predictor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI}
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(180deg,#0f2027,#2c5364);
+    color:#fff;
+}
+
+.app{
+    width:360px;
+    height:95vh;
+    background:rgba(255,255,255,0.06);
+    backdrop-filter:blur(20px);
+    border-radius:20px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+}
+
+.header{
+    padding:15px;
+    text-align:center;
+    background:rgba(255,255,255,0.08);
+    font-weight:bold;
+}
+
+/* screens */
+.screen{display:none;padding:20px;flex:1}
+.active{display:block}
+
+/* login */
+input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border-radius:10px;
+    border:none;
+    outline:none;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(90deg,#00c6ff,#0072ff);
+    color:#fff;
+    font-weight:bold;
+}
+
+/* number */
+.number{
+    font-size:80px;
+    text-align:center;
+    margin:20px 0;
+    transition:0.3s;
+}
+
+.animate{
+    transform:scale(1.4);
+    opacity:0;
+}
+
+/* label */
+.label{
+    text-align:center;
+    padding:8px;
+    border-radius:20px;
+    margin-bottom:10px;
+}
+
+.high{background:#00e676}
+.medium{background:#ffca28;color:#000}
+.low{background:#ff5252}
+
+/* history */
+.history{
+    text-align:center;
+    margin-top:15px;
+}
+
+.history span{
+    background:rgba(255,255,255,0.2);
+    padding:6px 10px;
+    margin:3px;
+    border-radius:10px;
+    display:inline-block;
+}
+
+/* settings */
+.slider{width:100%}
+.setting{margin-top:20px}
+
+/* nav */
+.nav{
+    display:none;
+    background:rgba(255,255,255,0.08);
+}
+.nav div{
+    flex:1;
+    text-align:center;
+    padding:12px;
+    cursor:pointer;
+}
+.nav div:hover{background:rgba(255,255,255,0.15)}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<div class="header">📊 91 Club Predictor</div>
+
+<!-- LOGIN -->
+<div class="screen active" id="loginScreen">
+    <h3>Login</h3>
+    <input id="user" placeholder="Username">
+    <input id="pass" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+</div>
+
+<!-- HOME -->
+<div class="screen" id="homeScreen">
+    <div id="number" class="number">0</div>
+    <div id="label" class="label medium">Medium Profit</div>
+    <div style="text-align:center">Next: <span id="timer">60</span>s</div>
+    <div class="history" id="history"></div>
+</div>
+
+<!-- SETTINGS -->
+<div class="screen" id="settingsScreen">
+    <h3>⚙️ Settings</h3>
+
+    <div class="setting">
+        Accuracy: <span id="accText">50</span>%
+        <input type="range" min="1" max="100" value="50" id="accuracy" class="slider" oninput="setAcc(this.value)">
+    </div>
+
+    <button onclick="reboot()">🔁 Reboot</button>
+</div>
+
+<!-- NAV -->
+<div class="nav" id="navBar">
+    <div onclick="show('homeScreen')">🏠</div>
+    <div onclick="show('settingsScreen')">⚙️</div>
+</div>
+
+</div>
+
+<script>
+let history = [];
+let acc = 50;
+let interval;
+let countdown = 60;
+let rebootMode = false;
+
+function login(){
+    let u = document.getElementById("user").value;
+    let p = document.getElementById("pass").value;
+
+    if(u && p){
+        history = [];
+        document.getElementById("loginScreen").classList.remove("active");
+        document.getElementById("homeScreen").classList.add("active");
+        document.getElementById("navBar").style.display = "flex";
+        start();
+    } else {
+        alert("Enter login details");
+    }
+}
+
+function show(id){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+function setAcc(val){
+    acc = val;
+    document.getElementById("accText").innerText = val;
+}
+
+function start(){
+    generate();
+
+    clearInterval(interval);
+
+    countdown = 60;
+    interval = setInterval(()=>{
+        if(rebootMode) return;
+
+        countdown--;
+        document.getElementById("timer").innerText = countdown;
+
+        if(countdown <= 0){
+            countdown = 60;
+            generate();
+        }
+    },1000);
+}
+
+function generate(){
+    if(rebootMode) return;
+
+    let numEl = document.getElementById("number");
+    numEl.classList.add("animate");
+
+    setTimeout(()=>{
+        let num;
+
+        if(Math.random()*100 < acc){
+            num = Math.floor(Math.random()*3)+7;
+        } else {
+            num = Math.floor(Math.random()*10);
+        }
+
+        numEl.innerText = num;
+        numEl.classList.remove("animate");
+
+        let label = "";
+        let cls = "";
+
+        if(num >= 7){label="High Profit"; cls="high";}
+        else if(num >= 4){label="Medium Profit"; cls="medium";}
+        else {label="Low Profit"; cls="low";}
+
+        let l = document.getElementById("label");
+        l.innerText = label;
+        l.className = "label " + cls;
+
+        history.unshift(num);
+        if(history.length > 3) history.pop();
+
+        document.getElementById("history").innerHTML =
+            history.map(n=>`<span>${n}</span>`).join("");
+
+    },200);
+}
+
+function reboot(){
+    rebootMode = true;
+
+    let t = 120;
+    document.getElementById("timer").innerText = t;
+
+    let r = setInterval(()=>{
+        t--;
+        document.getElementById("timer").innerText = t;
+
+        if(t <= 0){
+            clearInterval(r);
+            rebootMode = false;
+            alert("Reboot successfully completed");
+            start();
+        }
+    },1000);
+}
+</script>
+
+</body>
+</html>
