@@ -6,63 +6,84 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI}
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:system-ui,Segoe UI;
+}
+
 body{
     height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
-    background:linear-gradient(180deg,#0f2027,#2c5364);
+    background: radial-gradient(circle at top,#1b2b3a,#0f172a);
     color:#fff;
 }
 
+/* APP CARD */
 .app{
-    width:360px;
+    width:100%;
+    max-width:380px;
     height:95vh;
     background:rgba(255,255,255,0.06);
     backdrop-filter:blur(20px);
-    border-radius:20px;
+    border-radius:25px;
     overflow:hidden;
     display:flex;
     flex-direction:column;
+    box-shadow:0 10px 40px rgba(0,0,0,0.5);
 }
 
+/* HEADER */
 .header{
-    padding:15px;
+    padding:16px;
     text-align:center;
+    font-size:18px;
+    font-weight:600;
     background:rgba(255,255,255,0.08);
-    font-weight:bold;
 }
 
-/* screens */
-.screen{display:none;padding:20px;flex:1}
-.active{display:block}
+/* SCREENS */
+.screen{
+    display:none;
+    padding:20px;
+    flex:1;
+}
 
-/* login */
+.active{
+    display:block;
+}
+
+/* LOGIN */
 input{
     width:100%;
-    padding:12px;
+    padding:13px;
     margin:10px 0;
-    border-radius:10px;
     border:none;
+    border-radius:12px;
     outline:none;
+    font-size:14px;
 }
 
 button{
     width:100%;
-    padding:12px;
+    padding:13px;
     border:none;
-    border-radius:10px;
+    border-radius:12px;
     background:linear-gradient(90deg,#00c6ff,#0072ff);
     color:#fff;
-    font-weight:bold;
+    font-weight:600;
+    font-size:15px;
+    cursor:pointer;
 }
 
-/* number */
+/* NUMBER */
 .number{
-    font-size:80px;
+    font-size:85px;
     text-align:center;
-    margin:20px 0;
+    margin:25px 0 10px;
     transition:0.3s;
 }
 
@@ -71,48 +92,63 @@ button{
     opacity:0;
 }
 
-/* label */
+/* LABEL */
 .label{
     text-align:center;
-    padding:8px;
-    border-radius:20px;
-    margin-bottom:10px;
+    padding:8px 14px;
+    border-radius:25px;
+    margin:10px auto;
+    width:fit-content;
+    font-weight:600;
 }
 
-.high{background:#00e676}
-.medium{background:#ffca28;color:#000}
-.low{background:#ff5252}
+.high{background:#00e676;color:#000;}
+.medium{background:#ffca28;color:#000;}
+.low{background:#ff5252;color:#fff;}
 
-/* history */
+/* TIMER */
+#timer{
+    font-weight:bold;
+}
+
+/* HISTORY */
 .history{
     text-align:center;
-    margin-top:15px;
+    margin-top:20px;
 }
 
 .history span{
-    background:rgba(255,255,255,0.2);
-    padding:6px 10px;
-    margin:3px;
-    border-radius:10px;
     display:inline-block;
+    padding:6px 12px;
+    margin:4px;
+    border-radius:12px;
+    background:rgba(255,255,255,0.15);
 }
 
-/* settings */
-.slider{width:100%}
-.setting{margin-top:20px}
+/* SETTINGS */
+.setting{
+    margin-top:20px;
+}
 
-/* nav */
+.slider{
+    width:100%;
+}
+
+/* NAV */
 .nav{
     display:none;
     background:rgba(255,255,255,0.08);
 }
+
 .nav div{
     flex:1;
     text-align:center;
     padding:12px;
     cursor:pointer;
 }
-.nav div:hover{background:rgba(255,255,255,0.15)}
+.nav div:hover{
+    background:rgba(255,255,255,0.15);
+}
 </style>
 </head>
 
@@ -124,17 +160,24 @@ button{
 
 <!-- LOGIN -->
 <div class="screen active" id="loginScreen">
-    <h3>Login</h3>
+    <h3 style="text-align:center">Login</h3>
+
     <input id="user" placeholder="Username">
     <input id="pass" type="password" placeholder="Password">
+
     <button onclick="login()">Login</button>
 </div>
 
 <!-- HOME -->
 <div class="screen" id="homeScreen">
     <div id="number" class="number">0</div>
+
     <div id="label" class="label medium">Medium Profit</div>
-    <div style="text-align:center">Next: <span id="timer">60</span>s</div>
+
+    <div style="text-align:center;margin-top:10px;">
+        Next Update: <span id="timer">60</span>s
+    </div>
+
     <div class="history" id="history"></div>
 </div>
 
@@ -144,7 +187,8 @@ button{
 
     <div class="setting">
         Accuracy: <span id="accText">50</span>%
-        <input type="range" min="1" max="100" value="50" id="accuracy" class="slider" oninput="setAcc(this.value)">
+        <input type="range" min="1" max="100" value="50"
+        class="slider" oninput="setAcc(this.value)">
     </div>
 
     <button onclick="reboot()">🔁 Reboot</button>
@@ -159,20 +203,27 @@ button{
 </div>
 
 <script>
+
 let history = [];
 let acc = 50;
 let interval;
 let countdown = 60;
 let rebootMode = false;
 
+const CORRECT_PASSWORD = "09080870";
+
 function login(){
     let u = document.getElementById("user").value;
     let p = document.getElementById("pass").value;
 
     if(u && p){
+        if(p !== CORRECT_PASSWORD){
+            alert("Wrong password!");
+            return;
+        }
+
         history = [];
-        document.getElementById("loginScreen").classList.remove("active");
-        document.getElementById("homeScreen").classList.add("active");
+        show('homeScreen');
         document.getElementById("navBar").style.display = "flex";
         start();
     } else {
@@ -192,7 +243,6 @@ function setAcc(val){
 
 function start(){
     generate();
-
     clearInterval(interval);
 
     countdown = 60;
@@ -265,6 +315,7 @@ function reboot(){
         }
     },1000);
 }
+
 </script>
 
 </body>
