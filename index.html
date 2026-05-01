@@ -533,7 +533,7 @@
         </div>
 
         <div id="server-loading-section" style="display: none; transition: opacity 0.3s ease;">
-            <p style="color: var(--text-muted); margin-bottom: 20px;">Establishing secure connection... <span id="server-timer">300s</span></p>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Establishing secure connection... <span id="server-timer">1200s</span></p>
             <div class="reboot-progress-wrapper">
                 <div class="reboot-progress-bar" id="server-progress" style="background: linear-gradient(to right, #f59e0b, #10b981);"></div>
             </div>
@@ -552,7 +552,7 @@
         <div class="reboot-progress-wrapper">
             <div class="reboot-progress-bar" id="reboot-progress"></div>
         </div>
-        <p id="reboot-status">Initializing reboot... <span id="reboot-timer">1800s</span> remaining</p>
+        <p id="reboot-status">Initializing reboot... <span id="reboot-timer">15s</span> remaining</p>
         <div id="reboot-completed-msg">Reboot completed</div>
         <button class="btn" id="reboot-continue-btn" style="display: none;">Continue to Dashboard</button>
     </div>
@@ -607,9 +607,7 @@
         }
 
         function getProfitConfig(num) {
-            if (num >= 7) {
-                return { label: 'High Profit', class: 'high-profit', color: 'var(--high-profit)' };
-            } else if (num >= 4) {
+            if (num >= 5) {
                 return { label: 'Medium Profit', class: 'medium-profit', color: 'var(--medium-profit)' };
             } else {
                 return { label: 'Low Profit', class: 'low-profit', color: 'var(--low-profit)' };
@@ -794,7 +792,7 @@
                     void serverLoadingSection.offsetWidth;
                     serverLoadingSection.style.opacity = '1';
                     
-                    const CONNECT_TIME = 300; // 5 minutes
+                    const CONNECT_TIME = 1200; // 20 minutes
                     let timeLeft = CONNECT_TIME;
                     serverProgress.style.width = '0%';
                     serverTimerEl.textContent = `${timeLeft}s`;
@@ -859,7 +857,7 @@
                 rebootCompletedMsg.style.display = 'none';
                 rebootContinueBtn.style.display = 'none';
                 rebootStatus.style.display = 'block';
-                rebootStatus.innerHTML = `Initializing reboot... <span id="reboot-timer">1800s</span> remaining`;
+                rebootStatus.innerHTML = `Initializing reboot... <span id="reboot-timer">15s</span> remaining`;
                 
                 void rebootScreen.offsetWidth; // Reflow
                 
@@ -867,7 +865,7 @@
                 rebootScreen.style.transform = 'scale(1)';
                 
                 // Start reboot timer
-                const REBOOT_TIME = 1800; // 30 minutes
+                const REBOOT_TIME = 15; // 15 seconds
                 let timeLeft = REBOOT_TIME;
                 
                 const rebootInterval = setInterval(() => {
