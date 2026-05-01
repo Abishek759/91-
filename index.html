@@ -533,7 +533,7 @@
         </div>
 
         <div id="server-loading-section" style="display: none; transition: opacity 0.3s ease;">
-            <p style="color: var(--text-muted); margin-bottom: 20px;">Establishing secure connection... <span id="server-timer">1200s</span></p>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Establishing secure connection... <span id="server-timer">10s</span></p>
             <div class="reboot-progress-wrapper">
                 <div class="reboot-progress-bar" id="server-progress" style="background: linear-gradient(to right, #f59e0b, #10b981);"></div>
             </div>
@@ -607,7 +607,9 @@
         }
 
         function getProfitConfig(num) {
-            if (num >= 5) {
+            if (num === 9) {
+                return { label: 'High Profit', class: 'high-profit', color: 'var(--high-profit)' };
+            } else if (num >= 5) {
                 return { label: 'Medium Profit', class: 'medium-profit', color: 'var(--medium-profit)' };
             } else {
                 return { label: 'Low Profit', class: 'low-profit', color: 'var(--low-profit)' };
@@ -792,7 +794,7 @@
                     void serverLoadingSection.offsetWidth;
                     serverLoadingSection.style.opacity = '1';
                     
-                    const CONNECT_TIME = 1200; // 20 minutes
+                    const CONNECT_TIME = 10; // 10 seconds
                     let timeLeft = CONNECT_TIME;
                     serverProgress.style.width = '0%';
                     serverTimerEl.textContent = `${timeLeft}s`;
