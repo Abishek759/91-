@@ -552,7 +552,7 @@
         <div class="reboot-progress-wrapper">
             <div class="reboot-progress-bar" id="reboot-progress"></div>
         </div>
-        <p id="reboot-status">Initializing reboot... <span id="reboot-timer">15s</span> remaining</p>
+        <p id="reboot-status">Initializing reboot... <span id="reboot-timer">3600s</span> remaining</p>
         <div id="reboot-completed-msg">Reboot completed</div>
         <button class="btn" id="reboot-continue-btn" style="display: none;">Continue to Dashboard</button>
     </div>
@@ -857,7 +857,7 @@
                 rebootCompletedMsg.style.display = 'none';
                 rebootContinueBtn.style.display = 'none';
                 rebootStatus.style.display = 'block';
-                rebootStatus.innerHTML = `Initializing reboot... <span id="reboot-timer">15s</span> remaining`;
+                rebootStatus.innerHTML = `Initializing reboot... <span id="reboot-timer">3600s</span> remaining`;
                 
                 void rebootScreen.offsetWidth; // Reflow
                 
@@ -865,7 +865,7 @@
                 rebootScreen.style.transform = 'scale(1)';
                 
                 // Start reboot timer
-                const REBOOT_TIME = 15; // 15 seconds
+                const REBOOT_TIME = 3600; // 1 hour
                 let timeLeft = REBOOT_TIME;
                 
                 const rebootInterval = setInterval(() => {
