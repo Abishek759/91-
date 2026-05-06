@@ -606,8 +606,9 @@
             progressCircle.style.strokeDashoffset = offset;
         }
 
-        function getProfitConfig(num) {
-            if (num >= 8) {
+        function getProfitConfig() {
+            // 20% High Profit, 80% Medium Profit
+            if (Math.random() < 0.20) {
                 return { label: 'High Profit', class: 'high-profit', color: 'var(--high-profit)' };
             } else {
                 return { label: 'Medium Profit', class: 'medium-profit', color: 'var(--medium-profit)' };
@@ -615,9 +616,14 @@
         }
 
         function generatePrediction() {
-            // Generate number 0-9
-            const num = Math.floor(Math.random() * 10);
-            const config = getProfitConfig(num);
+            // Generate non-repeating number 0-9
+            let num;
+            const lastNum = history.length > 0 ? history[0].num : null;
+            do {
+                num = Math.floor(Math.random() * 10);
+            } while (num === lastNum);
+            
+            const config = getProfitConfig();
 
             // Trigger reflow for animations
             currentNumberEl.style.animation = 'none';
