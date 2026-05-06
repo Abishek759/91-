@@ -607,12 +607,10 @@
         }
 
         function getProfitConfig(num) {
-            if (num === 9) {
+            if (num >= 8) {
                 return { label: 'High Profit', class: 'high-profit', color: 'var(--high-profit)' };
-            } else if (num >= 5) {
-                return { label: 'Medium Profit', class: 'medium-profit', color: 'var(--medium-profit)' };
             } else {
-                return { label: 'Low Profit', class: 'low-profit', color: 'var(--low-profit)' };
+                return { label: 'Medium Profit', class: 'medium-profit', color: 'var(--medium-profit)' };
             }
         }
 
@@ -695,19 +693,9 @@
                 const percent = (timeLeft / UPDATE_INTERVAL) * 100;
                 setProgress(percent);
 
-                if (timeLeft <= 2) {
-                    clearInterval(countdownInterval);
-                    
-                    // Show Server Error
-                    currentNumberEl.style.animation = 'none';
-                    currentNumberEl.textContent = 'ERROR';
-                    currentNumberEl.style.fontSize = '3rem'; 
-                    currentNumberEl.style.color = 'var(--low-profit)';
-                    
-                    profitLabelEl.textContent = 'Server Error - Connection Lost';
-                    profitLabelEl.className = 'label-badge low-profit';
-                    progressCircle.style.stroke = 'var(--low-profit)';
-                    countdownTimerEl.textContent = 'Stopped';
+                if (timeLeft <= 0) {
+                    timeLeft = UPDATE_INTERVAL;
+                    generatePrediction();
                 }
             }, 1000);
         }
